@@ -1,0 +1,134 @@
+/*
+ * Copyright 2017 ThoughtWorks, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'java'
+
+def gitRevision = { ->
+  def hashStdOut = new ByteArrayOutputStream()
+  exec {
+    commandLine "git", "log", "-n", "1", "--format=%H"
+    standardOutput = hashStdOut
+  }
+
+  return hashStdOut.toString().trim()
+}
+
+project.ext.gitRevision = gitRevision()
+
+group = 'com.zimperium.plugins.zScan'
+version = '0.1.14'
+
+// these values that go into plugin.xml
+project.ext.pluginDesc = [
+  id         : 'com.zimperium.plugins.zScan',
+  version    : project.version,
+  goCdVersion: '19.2.0',
+  name       : 'zScan Upload Plugin',
+  description: 'This plugin can be used to upload applications to Zimperium zScan and receive scan reports.',
+  vendorName : 'Zimperium',
+  vendorUrl  : 'https://github.com/user/repository'
+]
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+sourceSets {
+  test {
+    java {
+      compileClasspath += configurations.runtimeClasspath
+      runtimeClasspath += configurations.runtimeClasspath
+    }
+  }
+}
+
+dependencies {
+  implementation("cd.go.plugin:go-plugin-api:19.2.0")
+  implementation("com.google.code.gson:gson:2.11.0")
+  implementation("commons-io:commons-io:2.17.0")
+  implementation("com.squareup.okhttp3:okhttp:4.12.0")
+  implementation("org.apache.commons:commons-text:1.12.0")
+  implementation("commons-io:commons-io:2.17.0")
+  
+  testImplementation("junit:junit:4.13.2")
+  testImplementation("org.hamcrest:hamcrest:2.2")
+  testImplementation("org.skyscreamer:jsonassert:1.5.3")
+}
+
+processResources {
+  from("src/main/resource-templates") {
+    filesMatching('plugin.xml') {
+      expand project.pluginDesc
+    }
+
+    filesMatching('plugin.properties') {
+      expand project.pluginDesc
+    }
+  }
+}
+
+test {
+  testLogging {
+    showStandardStreams = true
+
+    exceptionFormat 'full'
+
+    beforeSuite { suite ->
+      if (suite.parent) {
+        logger.quiet("Running ${suite.name}")
+      }
+    }
+
+    afterSuite { suite, result ->
+      if (suite.parent) {
+        logger.quiet("Tests run: ${result.testCount}, Failures: ${result.failedTestCount}, Skipped: ${result.skippedTestCount}, Time elapsed: ${(result.endTime - result.startTime) / 1000.00} sec")
+        if (result.resultType == TestResult.ResultType.FAILURE) {
+          logger.quiet("Test ${suite.name} FAILED")
+        }
+      } else {
+        logger.quiet("Total tests run: ${result.testCount}, Failures: ${result.failedTestCount}, Skipped: ${result.skippedTestCount}, Time elapsed: ${(result.endTime - result.startTime) / 1000.00} sec")
+      }
+    }
+  }
+}
+
+jar {
+  manifest {
+    attributes(
+      'Go-Version': project.version,
+      'ImplementationVersion': project.version,
+      'Go-Revision': project.gitRevision,
+      'Implementation-Title': project.name,
+      'Implementation-Version': project.version,
+      'Source-Compatibility': project.sourceCompatibility,
+      'Target-Compatibility': project.targetCompatibility
+    )
+  }
+
+  from(configurations.compileClasspath) {
+    into "lib/"
+  }
+  from(sourceSets.main.java) {
+    into "/"
+  }
+}
