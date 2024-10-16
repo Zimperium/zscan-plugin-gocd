@@ -1,47 +1,57 @@
-# TEMPLATE-MAPS Plugin
+# GoCD zScan Upload Plugin
 
-## Overview  - TO MODIFY
+## Overview
 
-Welcome to the TEMPLATE-MAPS Plugin repository. This plugin is designed to help you integrate with zScan/zShield/zDefend seamlessly. You can download, use, and modify this plugin under the MIT license.
-
-## Features - TO MODIFY
-
-- **Easy Integration**: Simplifies the process of connecting your solution with our products.
-- **Customizable**: Modify the plugin to fit your specific needs and requirements.
-- **Comprehensive Documentation**: Detailed instructions and examples to guide you through the integration process.
+Welcome to the GoCD zScan Upload Plugin repository. This plugin is designed to help you integrate with zScan seamlessly. You can download, use, and modify this plugin under the MIT license.
 
 ## Getting Started
 
-### Prerequisites  - TO MODIFY
+Please refer to [GoCD Plugin User Guide](https://docs.gocd.org/current/extension_points/plugin_user_guide.html) for more information on using plugins.
 
-- List any prerequisites here
+### Build Prerequisites
 
-### Installation  - TO MODIFY
+- This plugin requires Java 17
+- The build systems uses Gradle.
+- The plugin uses [Google GSON](https://github.com/google/gson) and [Stipe OkHttp](https://square.github.io/okhttp/) libraries 
+
+In your console, head over to the Authorizations tab in the Account Management section and generate a new API key. At a minimum, the following permissions are required:
+- Common: Teams - Manage
+- zScan: zScan Apps - Manage, zScan Assessments - View, zScan Builds - Upload 
+
+### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Zimperium/xyz.git
-   cd xyz
+   git clone https://github.com/Zimperium/zscan-plugin-gocd
+   cd zscan-plugin-gocd
    ```
 
-2. Install dependencies:
+2. Run Gradle:
    ```bash
-   [Command to install dependencies if needed]
+   ./gradlew build
    ```
 
-### Usage  - TO MODIFY
+The build command's output is a jar file with the plugin code and resources.  It can be found in the build/libs folder.  
+The name of the file is zscan-upload-plugin-(build-version).jar, e.g., zscan-upload-plugin-0.1.10.jar.
 
-1. Configure the plugin according to your needs. Insert step by step instructions here
+### Usage
 
-2. ...
+1. The plugin needs to be copied into the plugins/external folder of your GoCD installation.  Access to the server machine is required.
+   For more information, please refer to [GoCD Documentation](https://docs.gocd.org/current/extension_points/plugin_user_guide.html).
+2. The following configuration options are available:
+   - Endpoint (required): Base URL of Zimperium Console for your account, e.g., https://ziap.zimperium.com.
+   - Client ID (required): Client ID part of the API Key created through the Authorization tab of your console
+   - Client Secret (required): Client Secret part of the API Key. 
 
-### Example  - TO MODIFY
+   We recommend using environment variables configured for the appropriate stage to keep credentials. 
+   Secure variables should be used for the Client Secret part.
 
-Where appropiate provide an example here:
-
-```
-# Example code demonstrating how to use the plugin
-```
+   - Team Name (optional): Team name to assign applications to. If no team name is provided or if a team with the provided name is not found,
+     the 'Default' team is used. This setting is only relevant when uploading an application for the first time.
+     To change the application's team, please use the zScan Console.
+   - File(s) to Upload (Required): Pattern of files to upload.  Wildcards are allowed.  
+     To prevent accidental flooding of zScan servers, only the first 5 matches will be processed.
+   - Report Format: Specifies the format for the assessment report. For more information on SARIF, please see [OASIS Open](https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html).
 
 ## License
 
