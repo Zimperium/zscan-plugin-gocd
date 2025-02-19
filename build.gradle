@@ -29,13 +29,13 @@ def gitRevision = { ->
 project.ext.gitRevision = gitRevision()
 
 group = 'com.zimperium.plugins.zScan'
-version = '0.1.14'
+version = '0.1.15'
 
 // these values that go into plugin.xml
 project.ext.pluginDesc = [
   id         : 'com.zimperium.plugins.zScan',
   version    : project.version,
-  goCdVersion: '19.2.0',
+  goCdVersion: '22.1.0',
   name       : 'zScan Upload Plugin',
   description: 'This plugin can be used to upload applications to Zimperium zScan and receive scan reports.',
   vendorName : 'Zimperium',
@@ -63,7 +63,7 @@ sourceSets {
 }
 
 dependencies {
-  implementation("cd.go.plugin:go-plugin-api:19.2.0")
+  implementation("cd.go.plugin:go-plugin-api:22.1.0")
   implementation("com.google.code.gson:gson:2.11.0")
   implementation("commons-io:commons-io:2.17.0")
   implementation("com.squareup.okhttp3:okhttp:4.12.0")
