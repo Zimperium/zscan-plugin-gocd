@@ -36,7 +36,7 @@ In your console, head over to the Authorizations tab in the Account Management s
    ```
 
 The build command's output is a jar file with the plugin code and resources.  It can be found in the build/libs folder.  
-The name of the file is zscan-upload-plugin-(build-version).jar, e.g., zscan-upload-plugin-1.15.0.jar.
+The name of the file is zscan-upload-plugin-(build-version).jar, e.g., zscan-upload-plugin-0.1.15.jar.
 
 ### Usage
 
