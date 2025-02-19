@@ -10,8 +10,9 @@ Please refer to [GoCD Plugin User Guide](https://docs.gocd.org/current/extension
 
 ### Build Prerequisites
 
-- This plugin requires Java 17
-- The build systems uses Gradle.
+- This plugin supports Java versions 17 through 23
+- This plugin targets GoCD version 22.1.0 or later
+- The build systems uses Gradle
 - The plugin uses [Google GSON](https://github.com/google/gson) and [Stipe OkHttp](https://square.github.io/okhttp/) libraries
 
 In your console, head over to the Authorizations tab in the Account Management section and generate a new API key. At a minimum, the following permissions are required:
@@ -35,7 +36,7 @@ In your console, head over to the Authorizations tab in the Account Management s
    ```
 
 The build command's output is a jar file with the plugin code and resources.  It can be found in the build/libs folder.  
-The name of the file is zscan-upload-plugin-(build-version).jar, e.g., zscan-upload-plugin-0.1.10.jar.
+The name of the file is zscan-upload-plugin-(build-version).jar, e.g., zscan-upload-plugin-0.1.15.jar.
 
 ### Usage
 
